@@ -103,3 +103,48 @@ app.get('/api/roles', (req, res) => {
     res.json(results);
   });
 });
+
+// Agregar una nueva contraseña
+app.post('/api/passwords', (req, res) => {
+  const { account_name, site_username, encrypted_password, site_url } = req.body;
+
+  if (!account_name || !site_username || !encrypted_password || !site_url) {
+    return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+  }
+
+  // Insertar sitio web si no existe
+  const insertSite = 'INSERT INTO sites (url) VALUES (?) ON DUPLICATE KEY UPDATE url = url';
+
+  db.query(insertSite, [site_url], (err) => {
+    if (err) {
+      console.error('Error al insertar sitio web:', err);
+      return res.status(500).json({ error: 'Error al insertar sitio web' });
+    }
+
+    // Obtener el ID del sitio web
+    const getSiteId = 'SELECT site_id FROM sites WHERE url = ?';
+    db.query(getSiteId, [site_url], (err, siteResult) => {
+      if (err || siteResult.length === 0) {
+        console.error('Error al obtener site_id:', err);
+        return res.status(500).json({ error: 'No se pudo obtener el ID del sitio' });
+      }
+
+      const site_id = siteResult[0].site_id;
+
+      // Insertar contraseña asociada al sitio
+      const insertPassword = 'INSERT INTO passwords (site_id, account_name, username, site_username, encrypted_password) VALUES (?, ?, ?, ?, ?)';
+      db.query(
+        insertPassword,
+        [site_id, account_name, site_username, site_username, encrypted_password],
+        (err2) => {
+          if (err2) {
+            console.error('Error al guardar contraseña:', err2);
+            return res.status(500).json({ error: 'No se pudo guardar la contraseña' });
+          }
+
+          res.status(201).json({ message: 'Contraseña guardada exitosamente' });
+        }
+      );
+    });
+  });
+});
