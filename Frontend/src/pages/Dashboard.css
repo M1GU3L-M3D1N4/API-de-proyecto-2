@@ -1,30 +1,152 @@
+body {
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+  margin: 0;
+  padding: 0;
+}
+
 .dashboard-container {
-  padding: 2rem;
-  background-color: #f9f9f9;
-  min-height: 100vh;
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 2.5rem 2rem;
+  background: rgba(255,255,255,0.95);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(60, 60, 120, 0.18);
+  transition: box-shadow 0.3s;
+}
+
+.dashboard-container:hover {
+  box-shadow: 0 12px 40px rgba(60, 60, 120, 0.22);
 }
 
 h1, h2 {
-  color: #333;
+  color: #2d3a4a;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 section {
-  margin-bottom: 2rem;
-  background: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2.5rem;
+  background: #f7faff;
+  padding: 1.5rem 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(80, 120, 200, 0.07);
+  transition: transform 0.2s;
+}
+
+section:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 6px 24px rgba(80, 120, 200, 0.13);
 }
 
 ul {
-  padding-left: 1rem;
+  padding-left: 1.5rem;
 }
 
 li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.7rem;
+  font-size: 1.08rem;
+  color: #3a4a5d;
+  position: relative;
+  padding-left: 0.7rem;
+}
+
+li::before {
+  content: '•';
+  color: #4f8cff;
+  font-size: 1.2rem;
+  position: absolute;
+  left: -0.7rem;
+  top: 0.1rem;
 }
 
 .error {
-  color: red;
+  color: #e74c3c;
   font-weight: bold;
+  background: #ffeaea;
+  border-left: 4px solid #e74c3c;
+  padding: 0.7rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.button, button {
+  background: linear-gradient(90deg, #4f8cff 0%, #38c6ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(80, 120, 200, 0.13);
+  transition: background 0.2s, transform 0.2s;
+  margin-top: 1rem;
+}
+
+.button:hover, button:hover {
+  background: linear-gradient(90deg, #38c6ff 0%, #4f8cff 100%);
+  transform: translateY(-2px) scale(1.03);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #e0eafc;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b6c6e2;
+  border-radius: 8px;
+}
+
+/* Estilos para tablas de contraseñas */
+.password-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(80, 120, 200, 0.10);
+}
+
+.password-table th, .password-table td {
+  padding: 1rem 0.8rem;
+  text-align: left;
+}
+
+.password-table th {
+  background: #4f8cff;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e0eafc;
+}
+
+.password-table tr {
+  transition: background 0.2s;
+}
+
+.password-table tr:nth-child(even) {
+  background: #f7faff;
+}
+
+.password-table tr:hover {
+  background: #e0eafc;
+}
+
+.password-table td {
+  color: #2d3a4a;
+  font-size: 1rem;
+  border-bottom: 1px solid #e0eafc;
 }

@@ -80,7 +80,16 @@ app.listen(PORT, () => {
 });
 // Obtener todas las contraseñas almacenadas
 app.get('/api/passwords', (req, res) => {
-  const query = 'SELECT * FROM passwords';
+  const query = `
+    SELECT 
+      p.password_id,
+      p.account_name,
+      p.site_username,
+      p.encrypted_password,
+      s.url AS site_url
+    FROM passwords p
+    JOIN sites s ON p.site_id = s.site_id
+  `;
 
   db.query(query, (err, results) => {
     if (err) {
@@ -132,10 +141,10 @@ app.post('/api/passwords', (req, res) => {
       const site_id = siteResult[0].site_id;
 
       // Insertar contraseña asociada al sitio
-      const insertPassword = 'INSERT INTO passwords (site_id, account_name, username, site_username, encrypted_password) VALUES (?, ?, ?, ?, ?)';
+      const insertPassword = 'INSERT INTO passwords (site_id, account_name, site_username, encrypted_password) VALUES (?, ?, ?, ?)';
       db.query(
         insertPassword,
-        [site_id, account_name, site_username, site_username, encrypted_password],
+        [site_id, account_name, site_username, encrypted_password],
         (err2) => {
           if (err2) {
             console.error('Error al guardar contraseña:', err2);
@@ -146,5 +155,35 @@ app.post('/api/passwords', (req, res) => {
         }
       );
     });
+  });
+});
+
+// Obtener todos los sitios
+app.get('/api/sites', (req, res) => {
+  const query = 'SELECT * FROM sites';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener sitios:', err);
+      return res.status(500).json({ error: 'Error al obtener sitios' });
+    }
+    res.json(results);
+  });
+});
+
+// Eliminar una contraseña por ID
+app.delete('/api/passwords/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM passwords WHERE password_id = ?';
+
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar contraseña:', err);
+      return res.status(500).json({ error: 'No se pudo eliminar la contraseña' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Contraseña no encontrada' });
+    }
+    res.json({ message: 'Contraseña eliminada correctamente' });
   });
 });

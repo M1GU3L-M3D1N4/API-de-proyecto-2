@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
 
+// Componente principal del Dashboard
 function Dashboard() {
+  // Estado para almacenar las contraseñas obtenidas de la API
   const [passwords, setPasswords] = useState([]);
-  const [sites, setSites] = useState([]);
+  // Estado para almacenar los usuarios (solo visible para admin)
   const [users, setUsers] = useState([]);
-  const [role, setRole] = useState(null); // 1: Admin, 2: Usuario
+  // Estado para el rol del usuario (1: Admin, 2: Usuario)
+  const [role, setRole] = useState(null);
+  // Estado para mostrar mensajes de éxito
   const [successMsg, setSuccessMsg] = useState('');
 
-  // Formulario para agregar nueva contraseña
+  // Estado para el formulario de agregar nueva contraseña
   const [form, setForm] = useState({
     account_name: '',
     site_username: '',
@@ -16,8 +20,8 @@ function Dashboard() {
     site_url: '',
   });
 
-  // Formulario para editar contraseña
-  const [editId, setEditId] = useState(null);
+  // Estado para el formulario de edición de contraseña
+  const [editId, setEditId] = useState(null); // ID de la contraseña en edición
   const [editForm, setEditForm] = useState({
     account_name: '',
     site_username: '',
@@ -25,44 +29,52 @@ function Dashboard() {
     site_url: '',
   });
 
-  // Cargar datos al iniciar
+  // useEffect para cargar los datos al montar el componente
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Función para obtener datos de la API
   const fetchData = async () => {
     try {
-      // Simulación: rol admin (1)
+      // Simulación: asignar rol admin (1)
       setRole(1);
 
-      const [passwordRes, siteRes, userRes] = await Promise.all([
+      // Realiza las peticiones a las APIs de contraseñas y usuarios en paralelo
+      const [passwordRes, userRes] = await Promise.all([
         fetch('http://localhost:3000/api/passwords'),
-        fetch('http://localhost:3000/api/sites'),
         fetch('http://localhost:3000/api/users'),
       ]);
 
-      const [passwordData, siteData, userData] = await Promise.all([
+      // Obtiene los datos en formato JSON de cada respuesta
+      const [passwordData, userData] = await Promise.all([
         passwordRes.json(),
-        siteRes.json(),
         userRes.json(),
       ]);
 
-      setPasswords(passwordData);
-      setSites(siteData);
-      setUsers(userData);
+      // Muestra en consola los datos de contraseñas para depuración
+      console.log('passwordData:', passwordData);
+
+      // Actualiza los estados con los datos obtenidos
+      setPasswords(Array.isArray(passwordData) ? passwordData : []);
+      setUsers(Array.isArray(userData) ? userData : []);
     } catch (err) {
+      // Muestra errores en consola si ocurre algún problema al cargar datos
       console.error('Error al cargar datos del dashboard:', err);
     }
   };
 
+  // Maneja los cambios en el formulario de agregar contraseña
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Maneja los cambios en el formulario de edición de contraseña
   const handleEditChange = (e) => {
     setEditForm({ ...editForm, [e.target.name]: e.target.value });
   };
 
+  // Envía el formulario para agregar una nueva contraseña
   const handleAddPassword = async (e) => {
     e.preventDefault();
     try {
@@ -73,34 +85,39 @@ function Dashboard() {
       });
       if (res.ok) {
         setSuccessMsg('Contraseña guardada exitosamente');
-        fetchData();
+        fetchData(); // Recarga los datos
+        // Limpia el formulario
         setForm({ account_name: '', site_username: '', encrypted_password: '', site_url: '' });
-        setTimeout(() => setSuccessMsg(''), 3000); // Oculta el mensaje después de 3 segundos
+        // Oculta el mensaje después de 3 segundos
+        setTimeout(() => setSuccessMsg(''), 3000);
       }
     } catch (err) {
       console.error('Error al agregar contraseña:', err);
     }
   };
 
+  // Elimina una contraseña por su ID
   const handleDeletePassword = async (id) => {
     try {
       await fetch(`http://localhost:3000/api/passwords/${id}`, { method: 'DELETE' });
-      fetchData();
+      fetchData(); // Recarga los datos
     } catch (err) {
       console.error('Error al eliminar contraseña:', err);
     }
   };
 
+  // Activa el modo edición para una contraseña específica
   const handleEditPassword = (item) => {
     setEditId(item.password_id);
     setEditForm({
       account_name: item.account_name,
-      site_username: item.username || item.site_username,
-      encrypted_password: item.password || item.encrypted_password,
-      site_url: item.url || item.site_url,
+      site_username: item.site_username,
+      encrypted_password: item.encrypted_password,
+      site_url: item.site_url,
     });
   };
 
+  // Guarda los cambios realizados en la edición de una contraseña
   const handleSaveEdit = async (id) => {
     try {
       await fetch(`http://localhost:3000/api/passwords/${id}`, {
@@ -108,13 +125,14 @@ function Dashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editForm),
       });
-      setEditId(null);
-      fetchData();
+      setEditId(null); // Sale del modo edición
+      fetchData(); // Recarga los datos
     } catch (err) {
       console.error('Error al editar contraseña:', err);
     }
   };
 
+  // Cancela la edición de una contraseña
   const handleCancelEdit = () => {
     setEditId(null);
   };
@@ -123,13 +141,14 @@ function Dashboard() {
     <div className="dashboard-container">
       <h1>Dashboard</h1>
 
-      {/* Mensaje de éxito */}
+      {/* Mensaje de éxito al realizar alguna acción */}
       {successMsg && (
         <div style={{ color: 'green', marginBottom: '10px' }}>
           {successMsg}
         </div>
       )}
 
+      {/* Sección para agregar una nueva contraseña */}
       <section>
         <h2>Agregar nueva contraseña</h2>
         <form onSubmit={handleAddPassword} className="form">
@@ -166,12 +185,13 @@ function Dashboard() {
         </form>
       </section>
 
+      {/* Sección para mostrar las contraseñas guardadas */}
       <section>
         <h2>Contraseñas guardadas</h2>
         {passwords.length === 0 ? (
           <p>No hay contraseñas registradas.</p>
         ) : (
-          <table>
+          <table className="password-table">
             <thead>
               <tr>
                 <th>Cuenta</th>
@@ -185,6 +205,7 @@ function Dashboard() {
               {passwords.map((item) => (
                 <tr key={item.password_id}>
                   {editId === item.password_id ? (
+                    // Modo edición de la contraseña
                     <>
                       <td>
                         <input
@@ -221,11 +242,12 @@ function Dashboard() {
                       </td>
                     </>
                   ) : (
+                    // Vista normal de la contraseña
                     <>
                       <td>{item.account_name}</td>
-                      <td>{item.url || item.site_url}</td>
-                      <td>{item.username || item.site_username}</td>
-                      <td>{item.password || item.encrypted_password}</td>
+                      <td>{item.site_url}</td>
+                      <td>{item.site_username}</td>
+                      <td>{item.encrypted_password}</td>
                       <td>
                         <button onClick={() => handleDeletePassword(item.password_id)}>Eliminar</button>
                         <button onClick={() => handleEditPassword(item)}>Editar</button>
@@ -239,6 +261,7 @@ function Dashboard() {
         )}
       </section>
 
+      {/* Sección de gestión de usuarios, solo visible para admin */}
       {role === 1 && (
         <section>
           <h2>Gestión de usuarios (Admin)</h2>
