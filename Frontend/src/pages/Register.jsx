@@ -1,23 +1,42 @@
+/**
+ * Componente Register - Página de Registro de Usuario
+ * 
+ * Este componente proporciona la interfaz para registrar nuevos usuarios
+ * en el sistema. Incluye:
+ * - Formulario de registro con username, email y contraseña
+ * - Validación de campos
+ * - Manejo de errores de registro
+ * - Navegación al login tras registro exitoso
+ * - Conexión con API de registro
+ * 
+ * @author Tu Nombre
+ * @version 1.0.0
+ */
+
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Register.css'; // Estilos específicos para el registro
 
 /**
- * Componente para registrar un nuevo usuario.
+ * Componente Register
+ * @returns {JSX.Element} Interfaz de registro de usuario
  */
 function Register() {
-  const navigate = useNavigate(); // Hook para redirigir al usuario
+  // Hook para navegación programática
+  const navigate = useNavigate();
+  
+  // Estados del componente
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: ''
-  });
+  }); // Datos del formulario de registro
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState(''); // Mensajes de error
 
   /**
-   * Manejador de cambio en los inputs del formulario.
-   * Actualiza el estado según el campo modificado.
+   * Maneja los cambios en los campos del formulario
+   * @param {Event} e - Evento de cambio del input
    */
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,13 +47,15 @@ function Register() {
   };
 
   /**
-   * Manejador del envío del formulario.
-   * Envía los datos al backend para crear el usuario.
+   * Maneja el envío del formulario de registro
+   * @param {Event} e - Evento de envío del formulario
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(''); // Limpiar errores previos
 
     try {
+      // Realizar petición de registro al backend
       const response = await fetch('http://localhost:3000/api/register', {
         method: 'POST',
         headers: {
@@ -46,6 +67,7 @@ function Register() {
       const data = await response.json();
 
       if (response.ok) {
+        // Registro exitoso
         alert('Usuario registrado correctamente');
         navigate('/'); // Redirige al login
       } else {

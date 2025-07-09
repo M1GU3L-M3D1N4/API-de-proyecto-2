@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "description": "Frontend del Sistema de Gestión de Contraseñas - Aplicación React con Vite",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

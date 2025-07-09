@@ -1,14 +1,16 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "Backend de proyecto ",
+  "description": "Backend del Sistema de Gestión de Contraseñas - API REST con Node.js, Express y MySQL",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "Miguel Medina",
   "license": "ISC",
-  "keywords": [],
+  "keywords": ["api", "express", "mysql", "password-manager", "authentication"],
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.6.0",

@@ -1,21 +1,50 @@
-// src/pages/Login.jsx
+/**
+ * Componente Login - Página de Inicio de Sesión
+ * 
+ * Este componente proporciona la interfaz de autenticación para usuarios
+ * existentes del sistema. Incluye:
+ * - Formulario de login con email y contraseña
+ * - Validación de campos
+ * - Manejo de errores de autenticación
+ * - Navegación al dashboard tras login exitoso
+ * - Opción para mostrar/ocultar contraseña
+ * - Enlaces a registro y recuperación de contraseña
+ * 
+ * @author Tu Nombre
+ * @version 1.0.0
+ */
+
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 
+/**
+ * Componente Login
+ * @returns {JSX.Element} Interfaz de inicio de sesión
+ */
 function Login() {
+  // Hook para navegación programática
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
+  
+  // Estados del componente
+  const [showPassword, setShowPassword] = useState(false); // Controla visibilidad de contraseña
   const [formData, setFormData] = useState({
     email: '',
     password: ''
-  });
-  const [error, setError] = useState('');
+  }); // Datos del formulario
+  const [error, setError] = useState(''); // Mensajes de error
 
+  /**
+   * Alterna la visibilidad de la contraseña
+   */
   const handleTogglePassword = () => {
     setShowPassword(prev => !prev);
   };
 
+  /**
+   * Maneja los cambios en los campos del formulario
+   * @param {Event} e - Evento de cambio del input
+   */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -24,11 +53,16 @@ function Login() {
     }));
   };
 
+  /**
+   * Maneja el envío del formulario de login
+   * @param {Event} e - Evento de envío del formulario
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError(''); // Limpiar errores previos
 
     try {
+      // Realizar petición de login al backend
       const response = await fetch('http://localhost:3000/api/login', {
         method: 'POST',
         headers: {
@@ -40,12 +74,14 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
+        // Login exitoso
         alert('Inicio de sesión exitoso');
-        // Esperamos un momento antes de navegar para evitar que el alert interfiera
+        // Pequeña pausa antes de navegar para evitar conflictos con el alert
         setTimeout(() => {
           navigate('/dashboard');
         }, 100);
       } else {
+        // Mostrar error de autenticación
         setError(data.error || 'Credenciales inválidas');
       }
     } catch (err) {

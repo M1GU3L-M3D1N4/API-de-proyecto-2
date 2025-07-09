@@ -1,7 +1,27 @@
+/**
+ * Componente Principal de la Aplicación
+ * 
+ * Este componente configura el enrutamiento principal de la aplicación
+ * utilizando React Router para navegar entre las diferentes páginas.
+ * 
+ * Rutas disponibles:
+ * - / : Página de login (página principal)
+ * - /register : Página de registro de nuevos usuarios
+ * - /dashboard : Panel principal del usuario autenticado
+ * - /passwords : Gestión de contraseñas
+ * - /users : Administración de usuarios
+ * - /sites : Gestión de sitios web
+ * - /roles : Administración de roles
+ * - /forgot-password : Recuperación de contraseña
+ * 
+ * @author Tu Nombre
+ * @version 1.0.0
+ */
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Importación de páginas principales
+// Importación de componentes de página
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -11,6 +31,10 @@ import Sites from './pages/Sites';
 import Roles from './pages/Roles';
 import ForgotPassword from './pages/ForgotPassword';
 
+/**
+ * Componente App - Configuración de rutas principales
+ * @returns {JSX.Element} Aplicación con enrutamiento configurado
+ */
 function App() {
   return (
     <Router>

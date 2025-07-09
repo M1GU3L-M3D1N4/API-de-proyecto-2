@@ -1,8 +1,38 @@
+/**
+ * Componente Dashboard - Panel Principal de Usuario
+ * 
+ * Este componente representa el panel principal del sistema de gestión de contraseñas.
+ * Proporciona funcionalidades para:
+ * - Visualizar y gestionar contraseñas guardadas (CRUD completo)
+ * - Agregar nuevas contraseñas
+ * - Editar contraseñas existentes
+ * - Eliminar contraseñas
+ * - Gestión de usuarios (solo para administradores)
+ * - Cerrar sesión
+ * 
+ * Características principales:
+ * - Interfaz responsive con CSS moderno
+ * - Edición inline de contraseñas
+ * - Gestión de estado con React hooks
+ * - Integración con API REST
+ * - Control de acceso basado en roles
+ * 
+ * @author Tu Nombre
+ * @version 1.0.0
+ */
+
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 
-// Componente principal del Dashboard
+/**
+ * Componente principal del Dashboard
+ * @returns {JSX.Element} Interfaz del dashboard con todas las funcionalidades
+ */
 function Dashboard() {
+  // Hook para navegación programática entre rutas
+  const navigate = useNavigate();
+  
   // Estado para almacenar las contraseñas obtenidas de la API
   const [passwords, setPasswords] = useState([]);
   // Estado para almacenar los usuarios (solo visible para admin)
@@ -137,9 +167,35 @@ function Dashboard() {
     setEditId(null);
   };
 
+  // Función para cerrar sesión
+  const handleLogout = () => {
+    // Limpiar cualquier dato de sesión almacenado
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    // Redirigir al login usando React Router
+    navigate('/');
+  };
+
   return (
     <div className="dashboard-container">
-      <h1>Dashboard</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h1>Dashboard</h1>
+        <button onClick={handleLogout} style={{ 
+          background: 'linear-gradient(90deg, #ff4f4f 0%, #ff6b6b 100%)',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '8px',
+          padding: '0.7rem 1.5rem',
+          fontSize: '1rem',
+          fontWeight: '600',
+          cursor: 'pointer',
+          boxShadow: '0 2px 8px rgba(255, 80, 80, 0.3)',
+          transition: 'all 0.2s',
+          margin: '0'
+        }}>
+          Cerrar Sesión
+        </button>
+      </div>
 
       {/* Mensaje de éxito al realizar alguna acción */}
       {successMsg && (
@@ -265,7 +321,7 @@ function Dashboard() {
       {role === 1 && (
         <section>
           <h2>Gestión de usuarios (Admin)</h2>
-          <table>
+          <table className="user-table">
             <thead>
               <tr>
                 <th>ID</th>

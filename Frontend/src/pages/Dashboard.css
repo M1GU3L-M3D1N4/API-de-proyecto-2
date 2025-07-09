@@ -150,3 +150,45 @@ li::before {
   font-size: 1rem;
   border-bottom: 1px solid #e0eafc;
 }
+
+/* Estilos para tabla de usuarios - mismos estilos que password-table */
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(80, 120, 200, 0.10);
+}
+
+.user-table th, .user-table td {
+  padding: 1rem 0.8rem;
+  text-align: left;
+}
+
+.user-table th {
+  background: #4f8cff;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e0eafc;
+}
+
+.user-table tr {
+  transition: background 0.2s;
+}
+
+.user-table tr:nth-child(even) {
+  background: #f7faff;
+}
+
+.user-table tr:hover {
+  background: #e0eafc;
+}
+
+.user-table td {
+  color: #2d3a4a;
+  font-size: 1rem;
+  border-bottom: 1px solid #e0eafc;
+}
